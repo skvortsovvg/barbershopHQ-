@@ -3,8 +3,9 @@ require 'rubygems'
 require 'sinatra'
 require 'sinatra/reloader'
 require 'sinatra/activerecord'
+require 'sqlite3'
 
-set :database, 'sqllite3:barbershop.db'
+set :database, 'sqlite3:barbershop.db'
 
 configure do
   enable :sessions
