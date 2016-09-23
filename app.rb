@@ -44,16 +44,16 @@ get '/contacts' do
 end
 
 post '/contacts' do
-  if params[:email].empty? then
+  if params[:contact][:email].empty? then
     @error = "Не указан почтовый адрес для связи!"
     return erb :contacts
-  elsif params[:msg].empty? then
+  elsif !params[:contact][:message] then
     @error = "Напишите текст обращения!"
     return erb :contacts
   else    
-    new_c = Contact.new
-    new_c.email = params[:email] 
-    new_c.message = params[:msg]
+    new_c = Contact.new(params[:contact])
+    # new_c.email = params[:email] 
+    # new_c.message = params[:msg]
     new_c.save
     erb "Сообщение сохранено!"
   end
@@ -66,7 +66,7 @@ post '/visit' do
           :phoneno => 'Введите телефон',
           :plantime => 'Введите дату и время' }
  
-  @error = hh.select {|key,_| params[key] == ""}.values.join(", ")
+  @error = hh.select {|key,_| params[:client][key] == ""}.values.join(", ")
  
   if @error != ''
     return erb :visit
@@ -83,8 +83,9 @@ post '/visit' do
   #                 barber,
   #                 color)
   #               values (?, ?, ?, ?, ?)', [params[:username], params[:phoneno], params[:plantime], params[:barber], params[:color]]);
-  Client.create(name: params[:username], phoneno: params[:phoneno], datestamp: params[:plantime], barber: params[:barber], color: params[:color])
+  # Client.create(name: params[:username], phoneno: params[:phoneno], datestamp: params[:plantime], barber: params[:barber], color: params[:color])
+  Client.create(params[:client])
 
-  erb "Уважаемый #{params[:username]}, данные записаны! Ждем вас в #{params[:plantime]}"
+  erb "Уважаемый #{params[:client][:name]}, данные записаны! Ждем вас в #{params[:client][:datestamp]}"
 
 end
