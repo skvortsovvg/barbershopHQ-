@@ -15,27 +15,19 @@ class Barber < ActiveRecord::Base
 
 end
 
-configure do
-  enable :sessions
+class Contact < ActiveRecord::Base
+
 end
 
-helpers do
-  def username
-    session[:identity] ? session[:identity] : 'Hello stranger mutherfucker!'
-  end
+configure do
 end
 
 get '/' do
-  @barbers = Barber.all()
+  @barbers = Barber.all
 	erb :index
 end
 
 before '/visit' do
-  unless session[:identity]
-    session[:previous_url] = request.path
-    @error = 'Sorry, you need to be logged in to visit ' + request.path
-    halt erb(:login_form)
-  end
 end
 
 get '/about' do
@@ -50,39 +42,48 @@ get '/contacts' do
 	erb :contacts
 end
 
-get '/login/form' do
-  @error = ""
-  erb :login_form
-end
-
-get '/logout' do
-  session.delete(:identity)
-  session.delete(:pwd)
-  erb "<div class='alert alert-message'>Logged out</div>"
-end
-
-post '/login/attempt' do
-  if params['userpassword'] == 'secret' then
-  	session[:identity] = params['username']
-	session[:pwd] = params['userpassword']
-  	erb :visit
-  else
-    @error = "Invalid password!"
-    erb :login_form
+post '/contacts' do
+  if params[:email].empty? then
+    @error = "Не указан почтовый адрес для связи!"
+    return erb :contacts
+  elsif params[:msg].empty? then
+    @error = "Напишите текст обращения!"
+    return erb :contacts
+  else    
+    new_c = Contact.new
+    new_c.email = params[:email] 
+    new_c.message = params[:msg]
+    new_c.save
+    erb "Сообщение сохранено!"
   end
-
 end
 
 post '/visit' do
-	input = File.open('.\public\visit.txt', 'a+')
-	input.write("#{params[:username]}; #{params[:plantime]}; #{params[:phoneno]}; #{params[:barber]}\n")
-	input.close
-	erb "Уважаемый #{params[:username]}, данные записаны! Ждем вас в #{params[:plantime]}"
-end
 
-post '/contacts' do
-	input = File.open('.\public\contacts.txt', 'a+')
-	input.write("#{params[:email]}; #{params[:msg]}\r")
-	input.close
-	erb "Данные отправлены, спасибо за обращение!"
+  #validation
+  hh = {  :username => 'Введите ваше имя',
+          :phoneno => 'Введите телефон',
+          :plantime => 'Введите дату и время' }
+ 
+  @error = hh.select {|key,_| params[key] == ""}.values.join(", ")
+ 
+  if @error != ''
+    return erb :visit
+  end
+
+  # input = File.open('.\public\visit.txt', 'a+')
+  # input.write("#{params[:username]}; #{params[:plantime]}; #{params[:phoneno]}; #{params[:barber]}\n")
+  # input.close
+  # get_db().execute('INSERT INTO 
+  #               users 
+  #                 (name,
+  #                 phone,
+  #                 datestamp,
+  #                 barber,
+  #                 color)
+  #               values (?, ?, ?, ?, ?)', [params[:username], params[:phoneno], params[:plantime], params[:barber], params[:color]]);
+  Client.create(name: params[:username], phoneno: params[:phoneno], datestamp: params[:plantime], barber: params[:barber], color: params[:color])
+
+  erb "Уважаемый #{params[:username]}, данные записаны! Ждем вас в #{params[:plantime]}"
+
 end

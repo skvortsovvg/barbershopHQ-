@@ -4,11 +4,11 @@
 <form action="/contacts" method="POST">
   <div class="form-group">
     <label>E-mail:</label>
-    <input name="email" type="text" class="form-control" placeholder="введите e-mail">
+    <input name="email" type="text" class="form-control" placeholder="введите e-mail" <%="value=#{params[:email]}" if params[:email]%>>
   </div>
   <div class="form-group">
     <label>Сообщение:</label>
-    <textarea name="msg" class="form-control" rows="3" placeholder="текст сообщения"></textarea>
+    <textarea name="msg" class="form-control" rows="3" placeholder="текст сообщения"><%=params[:msg] if params[:msg]%></textarea>
   </div>
   <button type="submit" class="btn btn-primary">Отправить</button>
 </form>
