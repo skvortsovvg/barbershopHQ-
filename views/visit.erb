@@ -24,10 +24,9 @@ $(function() {
   <div class="form-group">
     <label>Парикмахер</label>
     <select name="barber" class="form-control input-sm">
-    	<option disabled selected="selected">Выберите парикмахера</option>
-    	<option>Walter White</option>
-		  <option>Jessie Pinkman</option>
-		  <option>Gus Fring</option>
+      <% @barbers.each do |barber| %>
+        <%= "<option #{'selected' if params[:barber] == barber.name}>#{barber.name}</option>" %>
+      <% end %>   
     </select>
   </div>
  

@@ -28,6 +28,7 @@ get '/' do
 end
 
 before '/visit' do
+   @barbers = Barber.all
 end
 
 get '/about' do
