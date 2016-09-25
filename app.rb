@@ -47,6 +47,16 @@ get '/contacts' do
 	erb :contacts
 end
 
+get '/bookings' do
+	@clients = Client.all
+	erb :bookings
+end
+
+get '/barbers/:id' do
+	@barber = Barber.find(params[:id])
+	erb :barber
+end
+
 post '/contacts' do
   if params[:contact][:email].empty? then
     @error = "Не указан почтовый адрес для связи!"
