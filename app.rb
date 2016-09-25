@@ -8,7 +8,7 @@ require 'sqlite3'
 set :database, 'sqlite3:barbershop.db'
 
 class Client < ActiveRecord::Base
-  validates :name, presence: true
+  validates :name, presence: {message: "Введите имя!"}, length: {minimum: 3}
   validates :phoneno, presence: true
   validates :datestamp, presence: true
   validates :barber, presence: true
