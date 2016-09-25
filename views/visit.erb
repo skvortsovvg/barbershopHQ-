@@ -10,15 +10,15 @@ $(function() {
 <form action="/visit" method="POST">
   <div class="form-group">
     <label>Ваше имя</label>
-    <input name="client[name]" type="text" class="form-control" placeholder="введите ваше имя">
+    <input name="client[name]" type="text" class="form-control" placeholder="введите ваше имя" <%="value=#{params[:client][:name]}" if params[:client]%>>
   </div>
   <div class="form-group">
     <label>Ваш телефон</label>
-    <input name="client[phoneno]" type="text" class="form-control" placeholder="введите номер телефона">
+    <input name="client[phoneno]" type="text" class="form-control" placeholder="введите номер телефона" <%="value=#{params[:client][:phoneno]}" if params[:client]%>>
   </div>
   <div class="form-group">
     <label>Время визита</label>
-    <input name="client[datestamp]" id="datetime" type="text" class="form-control" placeholder="введите желаемое время">
+    <input name="client[datestamp]" id="datetime" type="text" class="form-control" placeholder="введите желаемое время" <%="value=#{params[:client][:datestamp]}" if params[:client]%>>
   </div>
  
   <div class="form-group">
