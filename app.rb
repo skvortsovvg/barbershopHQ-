@@ -8,7 +8,11 @@ require 'sqlite3'
 set :database, 'sqlite3:barbershop.db'
 
 class Client < ActiveRecord::Base
-
+  validates :name, presence: true
+  validates :phoneno, presence: true
+  validates :datestamp, presence: true
+  validates :barber, presence: true
+  validates :color, presence: true
 end
 
 class Barber < ActiveRecord::Base
@@ -62,15 +66,15 @@ end
 post '/visit' do
 
   #validation
-  hh = {  :username => 'Введите ваше имя',
-          :phoneno => 'Введите телефон',
-          :plantime => 'Введите дату и время' }
+  # hh = {  :username => 'Введите ваше имя',
+  #         :phoneno => 'Введите телефон',
+  #         :plantime => 'Введите дату и время' }
  
-  @error = hh.select {|key,_| params[:client][key] == ""}.values.join(", ")
+  # @error = hh.select {|key,_| params[:client][key] == ""}.values.join(", ")
  
-  if @error != ''
-    return erb :visit
-  end
+  # if @error != ''
+  #   return erb :visit
+  # end
 
   # input = File.open('.\public\visit.txt', 'a+')
   # input.write("#{params[:username]}; #{params[:plantime]}; #{params[:phoneno]}; #{params[:barber]}\n")
@@ -84,7 +88,12 @@ post '/visit' do
   #                 color)
   #               values (?, ?, ?, ?, ?)', [params[:username], params[:phoneno], params[:plantime], params[:barber], params[:color]]);
   # Client.create(name: params[:username], phoneno: params[:phoneno], datestamp: params[:plantime], barber: params[:barber], color: params[:color])
-  Client.create(params[:client])
+  c = Client.new(params[:client])
+
+  if !c.save then #!c.valid? then
+    @error = c.errors.full_messages.first
+    return erb :visit
+  end
 
   erb "Уважаемый #{params[:client][:name]}, данные записаны! Ждем вас в #{params[:client][:datestamp]}"
 
